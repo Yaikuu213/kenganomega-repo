@@ -1,27 +1,19 @@
 pluginManagement {
     repositories {
+        gradlePluginPortal()
         google()
         mavenCentral()
-        gradlePluginPortal()
-    }
-    plugins {
-        id("com.android.application") version "8.2.2" apply false
-        id("com.android.library") version "8.2.2" apply false
-        id("org.jetbrains.kotlin.android") version "1.9.22" apply false
     }
 }
 
 dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    
-    // C'EST ICI QU'ON RÉPARE L'ERREUR "LIBS"
     versionCatalogs {
         create("libs") {
             from(files(rootProject.projectDir.resolve("libs.versions.toml")))
         }
     }
-
     repositories {
         google()
         mavenCentral()
@@ -30,7 +22,14 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "kenganomega-repo"
-rootProject.buildFileName = "env.build.gradle.kts" 
+rootProject.buildFileName = "env.build.gradle.kts"
+
+// LA MAGIE EST ICI : On rebranche les outils de création de JSON officiels
+rootProject.projectDir.resolve("build-src").apply {
+    if (exists()) {
+        includeBuild(resolve("conventions"))
+    }
+}
 
 include(":extensions-en-kenganmanga")
 project(":extensions-en-kenganmanga").projectDir = File(rootProject.projectDir, "extensions/en/kenganmanga")
