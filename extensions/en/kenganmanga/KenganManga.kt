@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.extension.en.kenganmanga
 
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
+import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.online.ParsedHttpSource
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -14,7 +15,6 @@ class KenganManga : ParsedHttpSource() {
     override val lang = "en"
     override val supportsLatest = true
 
-    // --- Liste des Mangas (Accueil/Populaire) ---
     override fun popularMangaSelector() = "div.post-item"
     override fun popularMangaNextPageSelector() = "a.next"
     
@@ -26,7 +26,6 @@ class KenganManga : ParsedHttpSource() {
         return manga
     }
 
-    // --- Détails du Manga ---
     override fun mangaDetailsParse(document: Document): SManga {
         val manga = SManga.create()
         manga.author = "Sandrovich Yabako"
@@ -36,7 +35,6 @@ class KenganManga : ParsedHttpSource() {
         return manga
     }
 
-    // --- Liste des Chapitres ---
     override fun chapterListSelector() = "ul.chapter-list li"
     
     override fun chapterFromElement(element: Element): SChapter {
@@ -44,23 +42,21 @@ class KenganManga : ParsedHttpSource() {
         val link = element.select("a")
         chapter.setUrlWithoutDomain(link.attr("href"))
         chapter.name = link.text()
-        chapter.date_upload = Calendar.getInstance().timeInMillis // Date actuelle par défaut
+        chapter.date_upload = Calendar.getInstance().timeInMillis
         return chapter
     }
 
-    // --- Lecture des Pages (Images) ---
-    override fun pageListParse(document: Document): List<eu.kanade.tachiyomi.source.model.Page> {
+    override fun pageListParse(document: Document): List<Page> {
         return document.select("div.entry-content img").mapIndexed { i, img ->
-            eu.kanade.tachiyomi.source.model.Page(i, "", img.attr("src"))
+            Page(i, "", img.attr("src"))
         }
     }
 
-    // Méthodes requises par l'interface mais inutilisées ici
     override fun latestUpdatesSelector() = popularMangaSelector()
     override fun latestUpdatesFromElement(element: Element) = popularMangaFromElement(element)
     override fun latestUpdatesNextPageSelector() = popularMangaNextPageSelector()
     override fun searchMangaSelector() = popularMangaSelector()
     override fun searchMangaFromElement(element: Element) = popularMangaFromElement(element)
     override fun searchMangaNextPageSelector() = popularMangaNextPageSelector()
-    override fun imageUrlParse(document: Document) = throw UnsupportedOperationException("Non utilisé")
+    override fun imageUrlParse(document: Document) = throw UnsupportedOperationException("Not used")
 }
