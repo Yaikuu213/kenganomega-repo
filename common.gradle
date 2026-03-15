@@ -1,22 +1,23 @@
+// On définit les outils nécessaires
 buildscript {
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        // C'est ici qu'on donne la "clé" à GitHub
         classpath 'com.android.tools.build:gradle:8.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22"
     }
 }
 
+// On applique les outils
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
     compileSdk 34
     
-    // Identifiant unique de ton extension
+    // C'est l'identité de ton extension
     namespace "eu.kanade.tachiyomi.extension.en.kenganmanga"
 
     defaultConfig {
@@ -25,7 +26,7 @@ android {
 
     sourceSets {
         main {
-            java.srcDirs = ['/'] // On dit à Android que ton code est ici
+            java.srcDirs = ['src', '/'] // On cherche le code partout
             res.srcDirs = ['res']
         }
     }
