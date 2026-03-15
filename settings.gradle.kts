@@ -24,7 +24,7 @@ dependencyResolutionManagement {
         mavenCentral()
         gradlePluginPortal()
         google()
-        maven(url = "https://jitpack.io")
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
@@ -35,7 +35,6 @@ plugins {
 
 rootProject.apply {
     name = "tachiyomi-extensions-template"
-    buildFileName = "env.build.gradle.kts"
 }
 
 rootProject.projectDir.resolve("build-src").apply {
@@ -44,11 +43,9 @@ rootProject.projectDir.resolve("build-src").apply {
 }
 
 includeAllSubprojectsIn(rootProject.projectDir.resolve("utils"), null)
-
 includeAllSubprojectsIn(rootProject.projectDir.resolve("lib"), "lib")
 includeAllSubprojectsIn(rootProject.projectDir.resolve("multisrc"), "multisrc")
 includeAllSubprojectsInRecursively(rootProject.projectDir.resolve("extensions"), "extensions")
-
 
 fun includeAllSubprojectsIn(dir: File, prefix: String?, expectedScriptName: String? = "build.gradle") {
     if (!dir.exists() || !dir.isDirectory) return
@@ -79,17 +76,4 @@ fun includeAllSubprojectsInRecursively(root: File, prefix: String?, expectedScri
         val include = element.isDirectory && (expectedScriptName == null ||
             (element.listFiles() ?: emptyArray())
                 .map { it.name }
-                .let { it.contains(expectedScriptName) || it.contains("${expectedScriptName}.kts") })
-
-        if (include) {
-            val path = when (prefix) {
-                null -> ":${element.name}"
-                else -> ":${prefix}-${element.name}"
-            }
-            include(path)
-            project(path).apply {
-                this.projectDir = element
-            }
-        }
-    }
-}
+                .let { it.contains(expectedScriptName) || it.contains("${
