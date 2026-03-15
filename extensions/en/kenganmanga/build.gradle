@@ -18,12 +18,11 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['.'] 
+            java.srcDirs = ['src'] // <-- LE SAUVEUR EST ICI
             res.srcDirs = ['res']
         }
     }
     
-    // Ça force le nom de l'APK pour Tachimanga
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             outputFileName = "eu.kanade.tachiyomi.extension.en.kenganmanga-v1.apk"
@@ -32,7 +31,6 @@ android {
 }
 
 dependencies {
-    // La nouvelle adresse officielle du dictionnaire !
     compileOnly 'org.tachiyomi:source-api:1.1'
     implementation 'org.jsoup:jsoup:1.15.3'
 }
