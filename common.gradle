@@ -1,9 +1,22 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        // C'est le lien direct vers le moteur Android et Kotlin !
+        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22'
+    }
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdk 34
     namespace "eu.kanade.tachiyomi.extension.en.kenganmanga"
+    compileSdk 34
 
     defaultConfig {
         minSdk 21
@@ -11,9 +24,9 @@ android {
 
     sourceSets {
         main {
-            java.srcDirs = ['/']
-            res.srcDirs = ['res']
             manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['.'] // Il va chercher ton fichier .kt ici
+            res.srcDirs = ['res'] // Il va chercher ton icône ici
         }
     }
 
@@ -25,6 +38,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+repositories {
+    google()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
