@@ -14,6 +14,14 @@ pluginManagement {
 dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    
+    // C'EST ICI QU'ON RÉPARE L'ERREUR "LIBS"
+    versionCatalogs {
+        create("libs") {
+            from(files(rootProject.projectDir.resolve("libs.versions.toml")))
+        }
+    }
+
     repositories {
         google()
         mavenCentral()
@@ -22,7 +30,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "kenganomega-repo"
-rootProject.buildFileName = "env.build.gradle.kts" // <-- LE SAUVEUR EST ICI
+rootProject.buildFileName = "env.build.gradle.kts" 
 
 include(":extensions-en-kenganmanga")
 project(":extensions-en-kenganmanga").projectDir = File(rootProject.projectDir, "extensions/en/kenganmanga")
