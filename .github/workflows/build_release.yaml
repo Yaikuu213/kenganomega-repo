@@ -1,86 +1,59 @@
-name: 'Construct Release'
+name: Construct Release
+
 on:
-  workflow_dispatch: {}
-concurrency:
-  group: '${{ github.workflow }}'
-  cancel-in-progress: true
+  workflow_dispatch:
+
 jobs:
   assemble_release:
-    name: 'Construct Release extensions repository'
-    runs-on: 'ubuntu-latest'
+    name: Construct Release Repo
+    runs-on: ubuntu-latest
     steps:
-    - id: 'step-0'
-      name: 'Clone repo'
-      uses: 'actions/checkout@v4'
-    - id: 'step-2'
-      name: 'Set up JDK'
-      uses: 'actions/setup-java@v4'
-      with:
-        java-version: '21'
-        distribution: 'adopt'
-    - id: 'step-3'
-      name: 'Setup Gradle'
-      uses: 'gradle/gradle-build-action@v2'
-    - id: 'step-4'
-      name: 'Prepare signing key'
-      run: 'echo ${{ secrets.KEY_STORE }} | base64 -d > ${{ secrets.KEY_FILE_NAME }}'
-    - id: 'step-5'
-      name: 'Construct release Repo'
-      env:
-        KEY_FILE_NAME: '${{ secrets.KEY_FILE_NAME }}'
-        KEY_STORE_PASSWORD: '${{ secrets.KEY_STORE_PASSWORD }}'
-        KEY_STORE_ALIAS: '${{ secrets.KEY_STORE_ALIAS }}'
-        KEY_PASSWORD: '${{ secrets.KEY_PASSWORD }}'
-      run: './gradlew :constructReleaseRepo'
-    - id: 'step-6'
-      name: 'Upload repo'
-      uses: 'actions/upload-artifact@v4'
-      with:
-        name: 'release-repo'
-        path: './build/repo/release/'
-        if-no-files-found: 'error'
-        retention-days: '1'
-    - id: 'step-7'
-      name: 'Clean up CI files'
-      run: 'rm ${{ secrets.KEY_FILE_NAME }}'
-      if: '${{ always() }}'
+      - name: Clone repo
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+          
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        
+      - name: Construct release Repo
+        run: ./gradlew :constructReleaseRepo
+        
+      - name: Upload repo
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-repo
+          path: ./build/repo/release/
+
   publish_repo:
-    name: 'Publish release repo'
-    runs-on: 'ubuntu-latest'
+    name: Publish release repo
+    runs-on: ubuntu-latest
     permissions:
-      contents: 'write'
-    needs:
-    - 'assemble_release'
-    if: '''true'' == ${{ vars.DO_PUBLISH_REPO }}'
+      contents: write
+    needs: assemble_release
     steps:
-    - id: 'step-0'
-      name: 'Checkout repo branch'
-      uses: 'actions/checkout@v4'
-      with:
-        ref: 'repo'
-        path: 'repo'
-    - id: 'step-1'
-      name: 'Download updated release'
-      uses: 'actions/download-artifact@v4'
-      with:
-        name: 'release-repo'
-        path: '~/release'
-    - id: 'step-2'
-      name: 'Fail on error'
-      run: 'set -e'
-    - id: 'step-3'
-      name: 'Show release contents'
-      run: 'ls -AR ~/release'
-    - id: 'step-4'
-      name: 'Show repo contents'
-      run: 'ls -AR ./repo'
-    - id: 'step-5'
-      name: 'Delete old contents'
-      run: |
-        cd ./repo
-        shopt -s extglob
-        rm -rf !(.git)
-        shopt -u extglob
-        ls -AR .
-    - id: 'step-6'
-      name: 'Copy new contents'
+      - name: Checkout repo branch
+        uses: actions/checkout@v4
+        with:
+          ref: repo
+          path: repo
+          
+      - name: Download updated release
+        uses: actions/download-artifact@v4
+        with:
+          name: release-repo
+          path: release
+          
+      - name: Update and push
+        run: |
+          cp -r release/* ./repo/
+          cd ./repo
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add .
+          git commit -m "Mise a jour de l'extension" || echo "Aucun changement"
+          git push
