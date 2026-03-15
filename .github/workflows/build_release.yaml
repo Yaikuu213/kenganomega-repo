@@ -27,13 +27,13 @@ jobs:
           mkdir -p ./build/repo/release/apk
           mkdir -p ./build/repo/release/icon
           
-          # On copie ton APK
-          cp ./extensions/en/kenganmanga/build/outputs/apk/debug/*.apk ./build/repo/release/apk/ || echo "APK not found"
+          # ON FORCE LE NOM DE L'APK POUR QU'IL SOIT IDENTIQUE AU JSON
+          find ./extensions/en/kenganmanga/build/outputs/apk/debug/ -name "*.apk" -exec cp {} ./build/repo/release/apk/eu.kanade.tachiyomi.extension.en.kenganmanga-v1.apk \;
           
           # On copie ton icône
           cp ./extensions/en/kenganmanga/res/drawable-nodpi/icon.png ./build/repo/release/icon/eu.kanade.tachiyomi.extension.en.kenganmanga.png || echo "Icon not found"
           
-          # ON GÉNÈRE LE CATALOGUE AVEC LE CHEMIN EXACT (LE CORRECTIF EST ICI)
+          # ON GÉNÈRE LE CATALOGUE AVEC LE CHEMIN RELATIF PARFAIT
           cat << 'EOF' > ./build/repo/release/index.min.json
           [
             {
@@ -58,7 +58,7 @@ jobs:
             }
           ]
           EOF
-          # Double compatibilité pour Suwayomi
+          # Compatibilité Suwayomi
           cp ./build/repo/release/index.min.json ./build/repo/release/index.json
 
       - name: Upload repo
@@ -93,5 +93,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git add .
-          git commit -m "Mise a jour de l'extension avec chemin APK correct" || echo "Aucun changement"
+          git commit -m "Mise a jour finale : APK renommé et chemin JSON corrigé" || echo "Aucun changement"
           git push
