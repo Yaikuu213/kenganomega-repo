@@ -1,9 +1,5 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-
 ext {
-    appName = 'Tachiyomi: Kengan Manga Online'
-    pkgNameSuffix = 'en.kenganmanga'
+    extName = 'Kengan Manga Online'
     extClass = '.KenganManga'
     extVersionCode = 1
     libVersion = '1.4'
