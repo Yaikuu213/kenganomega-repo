@@ -32,6 +32,7 @@ android {
 }
 
 dependencies {
-    compileOnly 'eu.kanade.tachiyomi:source-api:1.1'
+    // La nouvelle adresse officielle du dictionnaire !
+    compileOnly 'org.tachiyomi:source-api:1.1'
     implementation 'org.jsoup:jsoup:1.15.3'
 }
