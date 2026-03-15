@@ -42,38 +42,18 @@ rootProject.projectDir.resolve("build-src").apply {
     includeBuild(resolve("github-api"))
 }
 
-includeAllSubprojectsIn(rootProject.projectDir.resolve("utils"), null)
+// On simplifie la recherche pour éviter les bugs
+include(":extensions-en-kenganmanga")
+project(":extensions-en-kenganmanga").projectDir = File(rootProject.projectDir, "extensions/en/kenganmanga")
+
 includeAllSubprojectsIn(rootProject.projectDir.resolve("lib"), "lib")
 includeAllSubprojectsIn(rootProject.projectDir.resolve("multisrc"), "multisrc")
-includeAllSubprojectsInRecursively(rootProject.projectDir.resolve("extensions"), "extensions")
 
-fun includeAllSubprojectsIn(dir: File, prefix: String?, expectedScriptName: String? = "build.gradle") {
+fun includeAllSubprojectsIn(dir: File, prefix: String?) {
     if (!dir.exists() || !dir.isDirectory) return
-
-    (dir.listFiles() ?: emptyArray())
-        .asSequence()
-        .filter { it.isDirectory }
-        .filter { d ->
-            expectedScriptName == null ||
-                d.listFiles()?.any { it.name == expectedScriptName || it.name == "${expectedScriptName}.kts" } == true
-        }
-        .forEach { inclusion ->
-            val path = when (prefix) {
-                null -> ":${inclusion.name}"
-                else -> ":${prefix}-${inclusion.name}"
-            }
-            include(path)
-            project(path).apply {
-                this.projectDir = inclusion
-            }
-        }
+    dir.listFiles()?.filter { it.isDirectory }?.forEach { inclusion ->
+        val path = if (prefix == null) ":${inclusion.name}" else ":$prefix-${inclusion.name}"
+        include(path)
+        project(path).projectDir = inclusion
+    }
 }
-
-fun includeAllSubprojectsInRecursively(root: File, prefix: String?, expectedScriptName: String? = "build.gradle") {
-    if (!root.exists() || !root.isDirectory) return
-
-    fileTree(root).forEach { element ->
-        val include = element.isDirectory && (expectedScriptName == null ||
-            (element.listFiles() ?: emptyArray())
-                .map { it.name }
-                .let { it.contains(expectedScriptName) || it.contains("${
