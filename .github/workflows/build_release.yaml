@@ -33,13 +33,13 @@ jobs:
           # On copie ton icône
           cp ./extensions/en/kenganmanga/res/drawable-nodpi/icon.png ./build/repo/release/icon/eu.kanade.tachiyomi.extension.en.kenganmanga.png || echo "Icon not found"
           
-          # ON CREE LE CATALOGUE MANUELLEMENT !
+          # ON GÉNÈRE LE CATALOGUE AVEC LE CHEMIN EXACT (LE CORRECTIF EST ICI)
           cat << 'EOF' > ./build/repo/release/index.min.json
           [
             {
               "name": "Kengan Manga Online",
               "pkg": "eu.kanade.tachiyomi.extension.en.kenganmanga",
-              "apk": "eu.kanade.tachiyomi.extension.en.kenganmanga-v1.apk",
+              "apk": "apk/eu.kanade.tachiyomi.extension.en.kenganmanga-v1.apk",
               "lang": "en",
               "code": 1,
               "version": "1.0.0",
@@ -58,6 +58,7 @@ jobs:
             }
           ]
           EOF
+          # Double compatibilité pour Suwayomi
           cp ./build/repo/release/index.min.json ./build/repo/release/index.json
 
       - name: Upload repo
@@ -92,5 +93,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git add .
-          git commit -m "Mise a jour de l'extension" || echo "Aucun changement"
+          git commit -m "Mise a jour de l'extension avec chemin APK correct" || echo "Aucun changement"
           git push
