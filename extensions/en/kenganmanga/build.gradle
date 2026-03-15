@@ -1,24 +1,16 @@
 plugins {
-    id 'com.android.library' version '8.2.2'
-    id 'org.jetbrains.kotlin.android' version '1.9.22'
+    id 'tachiyomi.extension'
 }
 
-ext {
+tachiyomiExtension {
     extName = 'Kengan Manga Online'
     pkgNameSuffix = 'en.kenganmanga'
     extClass = '.KenganManga'
     extVersionCode = 1
-    libVersion = '1.0.0'
+    isNsfw = false
 }
 
 android {
-    namespace 'eu.kanade.tachiyomi.extension.en.kenganmanga'
-    compileSdk 34
-
-    defaultConfig {
-        minSdk 21
-    }
-
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -26,14 +18,8 @@ android {
             res.srcDirs = ['res']
         }
     }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
 
 dependencies {
-    compileOnly 'eu.kanade.tachiyomi:source-api:1.1'
     implementation 'org.jsoup:jsoup:1.15.3'
 }
