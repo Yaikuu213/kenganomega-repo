@@ -1,23 +1,8 @@
-// On définit les outils nécessaires
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22"
-    }
-}
-
-// On applique les outils
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
     compileSdk 34
-    
-    // C'est l'identité de ton extension
     namespace "eu.kanade.tachiyomi.extension.en.kenganmanga"
 
     defaultConfig {
@@ -26,8 +11,9 @@ android {
 
     sourceSets {
         main {
-            java.srcDirs = ['src', '/'] // On cherche le code partout
+            java.srcDirs = ['/']
             res.srcDirs = ['res']
+            manifest.srcFile 'AndroidManifest.xml'
         }
     }
 
@@ -39,12 +25,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-}
-
-repositories {
-    mavenCentral()
-    google()
-    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
