@@ -1,16 +1,20 @@
 plugins {
-    id 'tachiyomi.extension'
-}
-
-tachiyomiExtension {
-    extName = 'Kengan Manga Online'
-    pkgNameSuffix = 'en.kenganmanga'
-    extClass = '.KenganManga'
-    extVersionCode = 1
-    isNsfw = false
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android' version '1.9.22'
 }
 
 android {
+    namespace 'eu.kanade.tachiyomi.extension.en.kenganmanga'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'eu.kanade.tachiyomi.extension.en.kenganmanga'
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -18,8 +22,16 @@ android {
             res.srcDirs = ['res']
         }
     }
+    
+    // Ça force le nom de l'APK pour Tachimanga
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "eu.kanade.tachiyomi.extension.en.kenganmanga-v1.apk"
+        }
+    }
 }
 
 dependencies {
+    compileOnly 'eu.kanade.tachiyomi:source-api:1.1'
     implementation 'org.jsoup:jsoup:1.15.3'
 }
