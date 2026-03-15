@@ -1,3 +1,8 @@
+plugins {
+    id 'com.android.library' version '8.2.2'
+    id 'org.jetbrains.kotlin.android' version '1.9.22'
+}
+
 ext {
     extName = 'Kengan Manga Online'
     pkgNameSuffix = 'en.kenganmanga'
@@ -6,4 +11,29 @@ ext {
     libVersion = '1.0.0'
 }
 
-apply from: "$rootDir/common.gradle"
+android {
+    namespace 'eu.kanade.tachiyomi.extension.en.kenganmanga'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 21
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['.'] 
+            res.srcDirs = ['res']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compileOnly 'eu.kanade.tachiyomi:source-api:1.1'
+    implementation 'org.jsoup:jsoup:1.15.3'
+}
