@@ -1,8 +1,9 @@
 ext {
     extName = 'Kengan Manga Online'
+    pkgNameSuffix = 'en.kenganmanga'
     extClass = '.KenganManga'
     extVersionCode = 1
-    libVersion = '1.4'
+    libVersion = '1.0.0'
 }
 
 apply from: "$rootDir/common.gradle"
