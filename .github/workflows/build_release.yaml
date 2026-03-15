@@ -20,20 +20,21 @@ jobs:
       - name: Build APK
         run: |
           chmod +x ./gradlew
-          ./gradlew :extensions-en-kenganmanga:assembleDebug
+          # On compile en mode Release pour que Tachimanga l'accepte
+          ./gradlew :extensions-en-kenganmanga:assembleRelease
 
       - name: Prepare Repo Folder
         run: |
           mkdir -p ./build/repo/release/apk
           mkdir -p ./build/repo/release/icon
           
-          # ON FORCE LE NOM DE L'APK POUR QU'IL SOIT IDENTIQUE AU JSON
-          find ./extensions/en/kenganmanga/build/outputs/apk/debug/ -name "*.apk" -exec cp {} ./build/repo/release/apk/eu.kanade.tachiyomi.extension.en.kenganmanga-v1.apk \;
+          # On cherche l'APK dans le dossier RELEASE cette fois
+          find ./extensions/en/kenganmanga/build/outputs/apk/release/ -name "*.apk" -exec cp {} ./build/repo/release/apk/eu.kanade.tachiyomi.extension.en.kenganmanga-v1.apk \;
           
           # On copie ton icône
           cp ./extensions/en/kenganmanga/res/drawable-nodpi/icon.png ./build/repo/release/icon/eu.kanade.tachiyomi.extension.en.kenganmanga.png || echo "Icon not found"
           
-          # ON GÉNÈRE LE CATALOGUE AVEC LE CHEMIN RELATIF PARFAIT
+          # ON GÉNÈRE LE CATALOGUE (Version 1.0.1 pour forcer la mise à jour)
           cat << 'EOF' > ./build/repo/release/index.min.json
           [
             {
@@ -41,8 +42,8 @@ jobs:
               "pkg": "eu.kanade.tachiyomi.extension.en.kenganmanga",
               "apk": "apk/eu.kanade.tachiyomi.extension.en.kenganmanga-v1.apk",
               "lang": "en",
-              "code": 1,
-              "version": "1.0.0",
+              "code": 2,
+              "version": "1.0.1",
               "nsfw": 0,
               "hasReadme": 0,
               "hasChangelog": 0,
@@ -58,7 +59,6 @@ jobs:
             }
           ]
           EOF
-          # Compatibilité Suwayomi
           cp ./build/repo/release/index.min.json ./build/repo/release/index.json
 
       - name: Upload repo
@@ -93,5 +93,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git add .
-          git commit -m "Mise a jour finale : APK renommé et chemin JSON corrigé" || echo "Aucun changement"
+          git commit -m "Build Release 1.0.1 : Correction identité extension" || echo "Aucun changement"
           git push
